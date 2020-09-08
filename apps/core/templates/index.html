@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block morescripts %}
+    <!-- <script src="{% static 'js/vendor/axios.min.js' %}"></script> this file is areay included in base-->
+    <link rel="stylesheet" type="text/css" href="{% static 'homepage.css' %}" />
+    <!--<script src="{% static 'js/components/newsfeed.js' %}"></script>-->
+{% endblock %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+{% else %}
+    <div class="hero-box logged-out-header">
+  </div><!-- Don't include this div if user is signed in -->
+{#  <div class="centered logged-out-header-inner">#}
+{#    <h1 class="header-text">Learn to develop on the web with an easy drag-and-drop interface.</h1>#}
+{#    <div class="showcase">#}
+{#      <img class="showcase-img" src="http://quat1024.github.io/ElementalForkasdasdsad/resources/editor-screenshot.png" />#}
+{#      <a class="showcase-trigger" style="#}
+{#  left: 70.5%; top:77%;"></a>#}
+{#      <div class="showcase-callout" style="left: 56%; top:89%;">Intuitive, block based editor</div>#}
+{#      <a class="showcase-trigger" style="#}
+{#  left: 18%; top:38%;"></a>#}
+{#      <div class="showcase-callout" style="left: 4%; top:50%;">Instant updates as you design</div>#}
+{#      <a class="showcase-trigger" style="#}
+{#  left: 18%; top:2%;"></a>#}
+{#      <div class="showcase-callout arrowplacement2" style="left: 34%; top:15%;">Share your pages online with one click</div>#}
+{#      <a class="showcase-trigger" style="#}
+{#  left: 65.5%; top:24%;"></a>#}
+{##}
+{#      <div class="showcase-callout" style="left: 51%; top:35%;">Full HTML and CSS features</div>#}
+{#    </div>#}
+{#  </div>#}
+{#  <div class="showcase-pocket"></div>#}
+{#  <div class="cta-wrapper" class="centered">#}
+{#    <a href="#" class="cta-button">Start creating!<br><span>no account required</span></a>#}
+{#    <div class="or-separator">or</div>#}
+{#    <a href="#" class="cta-button">Register for Free<br><span>to save to the cloud</span></a>#}
+{#  </div>#}
+{#</div>#}
+{% endif %}
+
+{#<div class="carousel-wrapper gray">#}
+{#  <div class="carousel">#}
+{#    <h3 class="carousel-title">Featured Pages</h3>#}
+{#    <div class="carousel-content">#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/444/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">My Fun Website</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/555/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">ELEMENTAL IS SO COOL</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/666/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I like apple pie</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/777/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I decided to give this page a really long name. What was I thinking!? Giving it a long name was obviously a bad idea, but I did it anyway. How strange. Lorem Ipsum dolor sit amet something something yadda yadda yadda.</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
+<div class="carousel-wrapper">
+<div class="gallery lightBack">
+    <h3 class="sectionHeader">The Elemental Gallery</h3>
+    <h6 class="sectionSubheader">Some of the coolest stuff people have done with Elemental.</h6>
+
+    <div class="gallery">
+        <marquee style="font-family:'Comic Sans MS';font-weight:bold;font-size:1000%;color:limegreen">Welcome</marquee>
+    </div>
+</div>
+{#  <div class="carousel">#}
+{#    <h3 class="carousel-title">What's Popular?</h3>#}
+{#    <div class="carousel-content">#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/444/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">My Fun Website</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/555/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">ELEMENTAL IS SO COOL</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/666/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I like apple pie</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/777/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I decided to give this page a really long name. What was I thinking!? Giving it a long name was obviously a bad idea, but I did it anyway. How strange. Lorem Ipsum dolor sit amet something something yadda yadda yadda.</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#    </div>#}
+{#  </div>#}
+</div>
+{#<div class="carousel-wrapper gray">#}
+{#  <div class="carousel">#}
+{#    <h3 class="carousel-title">What's New?</h3>#}
+{#    <div class="carousel-content">#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/444/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">My Fun Website</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/555/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">ELEMENTAL IS SO COOL</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/666/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I like apple pie</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#      <a href="#" class="carousel-link">#}
+{#        <img src="http://placehold.it/250/777/000" alt="" class="carousel-image" />#}
+{#        <div class="carousel-info">#}
+{#          <h5 class="carousel-header">I decided to give this page a really long name. What was I thinking!? Giving it a long name was obviously a bad idea, but I did it anyway. How strange. Lorem Ipsum dolor sit amet something something yadda yadda yadda.</h5>#}
+{#        </div>#}
+{#      </a>#}
+{#    </div>#}
+{#  </div>#}
+{#</div>#}
+{% endblock %}
+
+{% block extra_scripts %}
+{% endblock %}

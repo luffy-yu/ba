@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="description"
+          content="A simple HTML5 painting application. You make strokes of any size, create shapes of any color, and even navigate through time with full undo/redo support."/>
+
+    <title>Painter</title>
+
+    <meta name='viewport' content='width=device-width,initial-scale=1.0,user-scalable=no'/>
+    <link href="{% static 'images/projects/png/painter.png' %}" rel='apple-touch-icon' sizes='152x152'/>
+    <meta name='apple-mobile-web-app-title' content='Painter'/>
+    <link href="{% static 'styles/css/global.css' %}" rel="stylesheet"/>
+    <link href="#" rel="shortcut icon"/>
+</head>
+<body class="black">
+
+<div id="app">
+
+    <canvas width="0" height="0" id="canvas"></canvas>
+
+    <div id="sidebar">
+
+        <div id="title">
+
+            <h1>Painter</h1>
+
+            <a class="author nav" href="https://calebevans.me/"><span class="by">by</span> Caleb Evans</a>
+
+        </div>
+
+        <div id="sidebar-buttons">
+
+            <div id="controls">
+                <button id="clear" class="red">Clear</button>
+                <button id="save">Save</button>
+                <br/>
+                <button id="undo">Undo</button>
+                <button id="redo">Redo</button>
+                <span id="scroll-for-more">Scroll for more »</svg></span>
+            </div>
+
+            <div id="tools">
+                <button id="brush" class="tool" title="Drag to paint">Brush</button>
+                <button id="path" class="tool" title="Click to make straight lines, click/hold to make curves">Path
+                </button>
+                <br/>
+                <button id="rect" class="tool" title="Drag to make rectangles (Shift for squares)">Rect</button>
+                <button id="ellipse" class="tool" title="Drag to make ellipses (Shift for circles)">Ellipse</button>
+            </div>
+
+        </div>
+
+        <div id="stroke-container">
+            <div id="slider" class="ui-slider light">
+                <div id="handle" class="ui-slider-handle"></div>
+            </div>
+            <div id="box">
+                <div id="stroke"></div>
+            </div>
+        </div>
+
+        <div id="colors"></div>
+    </div>
+
+</div>
+
+<script src="{% static 'libs/jquery/3.3.1/jquery.min.js' %}"
+        integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jqueryui/1.11.4/jquery-ui.min.js' %}"
+        integrity="sha384-YWP9O4NjmcGo4oEJFXvvYSEzuHIvey+LbXkBNJ1Kd0yfugEZN9NCQNpRYBVC1RvA"
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js' %}"
+        integrity="sha384-MI/QivrbkVVJ89UOOdqJK/w6TLx0MllO/LsQi9KvvJFuRHGbYtsBvbGSM8JHKCS0"
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jcanvas/16.7.3/jcanvas.min.js' %}"
+        integrity="sha384-amfY6Xr18yRWq6l+1TPfkoSGRCGLNhkU67i1uElI5+u4hC5G5lhbvUU75assw5Jm"
+        crossorigin="anonymous"></script>
+<script src="{% static 'scripts/global.min.js' %}"></script>
+<script src="{% static 'scripts/brush.min.js' %}"></script>
+<script src="{% static 'scripts/path.min.js' %}"></script>
+<script src="{% static 'scripts/rect.min.js' %}"></script>
+<script src="{% static 'scripts/ellipse.min.js' %}"></script>
+</body>
+</html>

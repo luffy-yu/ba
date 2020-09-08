@@ -1,0 +1,10 @@
+deployment:
+  production:
+    branch: master
+    commands:
+        - git push git@heroku.com:elementalcode.git $CIRCLE_SHA1:master
+        - heroku run python manage.py migrate --app elementalcode
+
+notify:
+  webhooks:
+    - url: https://webhooks.gitter.im/e/588b954a8e591bb172ea

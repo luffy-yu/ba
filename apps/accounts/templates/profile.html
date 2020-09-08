@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block morescripts %}
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'homepage.css' %}" />
+    <script>
+    var ProjectsCount = {{ projects.count }} + 1;
+    var USERNAME = '{{ user.username }}';
+    var USERID = '{{ user.id }}';
+    var CSRF_TOKEN = '{{ csrf_token }}';
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="hero-box">
+	<div class="box centered">
+		<div class="upper seafoam">
+			<h1 class="white">{{ user.username }}</h1>
+			<div style="float:right; margin-top:27px">User</div>
+		</div>
+		<div class="pane1 about">
+			<div class="inner-head">
+				<h3>About Me</h3>
+				<div id="aboutme"{% if request.user == user %} contenteditable="true"{% endif %}>
+					{% if user.trusted %}
+						{{ user.about_me }}
+					{% endif %}
+				</div>
+				<h3>What I'm Working On</h3>
+				<div id="workingon"{% if request.user == user %} contenteditable="true"{% endif %}>
+					{% if user.trusted %}
+						{{ user.working_on }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="pane2 about">
+			<div class="inner-head">
+				<h3>Featured Creation</h3>
+				<a href="#"><img src="http://ipex.pw/internalpx/perm/embed/elemental/project_base_icon.png"></a>
+				<div style="margin-left:auto;margin-right:auto;display:table;">
+					<a>Project</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="carousel-wrapper gray">
+	<div class="row box centered">
+		<h3>Shared Creations
+			<div class="inline float-right see-all see-all-projects">
+				<a>See All</a>
+			</div>
+		</h3>
+		<div>
+            <ul class="userpage-shared-section-carousel">
+    			{% for project in projects %}
+					<li>
+						<a href="{% url 'projects:edit-project' pk=project.id %}">
+							<img src="http://ipex.pw/internalpx/perm/embed/elemental/project_base_icon.png">
+						</a><br>
+						<a href="{% url 'projects:edit-project' pk=project.id %}">{{ project.name }}</a>
+					</li>
+    			{% endfor %}
+            </ul>
+		</div>
+	</div>
+</div>
+<div class="carousel-wrapper">
+	<div class="row box centered">
+		<h3>Favorite Creations
+			<div class="inline float-right see-all see-all-favorites">
+				<a>See All</a>
+			</div>
+		</h3>
+		<div>
+			<ul class="userpage-favorite-section-carousel">
+				<li>
+					<a href="https://elementalcode.herokuapp.com/projects/1">
+						<img src="http://ipex.pw/internalpx/perm/embed/elemental/project_base_icon.png">
+					</a><br>
+					<a href="https://elementalcode.herokuapp.com/projects/1">Project</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="carousel-wrapper gray">
+	<div class="row box centered">
+		<h3>Following
+			<div class="inline float-right see-all see-all-following">
+				<a>See All</a>
+			</div>
+		</h3>
+		<div>
+			<ul class="userpage-following-section-carousel user-icons">
+				<li>
+					<a href="https://elementalcode.herokuapp.com/users/Dylan">
+						<img src="http://ipex.pw/internalpx/perm/embed/elemental/user-icons-static/d.png">
+					</a><br>
+					<a href="https://elementalcode.herokuapp.com/users/Dylan">Dylan</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="carousel-wrapper">
+	<div class="row box centered">
+		<h3>Followers
+			<div class="inline float-right see-all see-all-followers">
+				<a>See All</a>
+			</div>
+		</h3>
+		<div>
+			<ul class="userpage-followers-section-carousel user-icons">
+				<li>
+					<a href="https://elementalcode.herokuapp.com/users/Dylan">
+						<img src="http://ipex.pw/internalpx/perm/embed/elemental/user-icons-static/d.png">
+					</a><br>
+					<a href="https://elementalcode.herokuapp.com/users/Dylan">Dylan</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}

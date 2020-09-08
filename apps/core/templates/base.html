@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+	  <title>{% block title %}{% endblock %}ElementalCode</title>
+	  <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+	  <link rel="icon" href="{% static 'favicon.ico' %}" />
+	  <script src="{% static 'js/vendor/axios.min.js' %}"></script>
+	  {% block morescripts %}{% endblock morescripts %}
+	</head>
+	<body>
+		<div class="wrapper">
+			{% include "includes/navbar.html" %}
+			<div id="content-wrapper">
+				{% block content %}{% endblock %}
+			</div>
+			<div class="push"></div>
+		</div>
+		{% include "includes/footer.html" %}
+
+		{% block extra_scripts %}{% endblock extra_scripts %}
+	</body>
+</html>

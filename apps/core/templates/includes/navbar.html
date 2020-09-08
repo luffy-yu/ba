@@ -1,0 +1,42 @@
+<div id="nav-wrapper">
+  <script>
+  var scrollShadow = function() {
+    var scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
+    var amnt = (Math.sqrt(-(scrollPos-100)*scrollPos)-50)/15 - 1;
+    if(scrollPos > 50) {
+      amnt = 0;
+    }
+    if(scrollPos == 0) {
+      amnt = -5.1;
+    }
+    document.getElementById("nav-wrapper").style.boxShadow = "0 1px 5px " + amnt + "px #252E35";
+  };
+  window.addEventListener("load", function() {
+    if(document.getElementById("content-wrapper").children[0] &&
+      document.getElementById("content-wrapper").children[0].classList.contains("hero-box")) {
+        scrollShadow();
+        window.addEventListener("scroll", scrollShadow);
+      }
+
+  });
+  </script>
+  <nav id="site-nav" class="centered">
+    <div id="left-links">
+      <a href="{% url 'index' %}" class="green-link"><!--<img src="https://elementalcode.herokuapp.com/static/resources/navbarimg1.png" alt="Elemental" />-->Elemental</a>
+      <a href="{% url 'projects:create-project' %}">Create</a>
+      <a href="{% url 'painters:create-painter' %}">Painter</a>
+      <a href="#">Explore</a>
+    </div>
+    <div id="right-links">
+      {% if request.user.is_authenticated %}
+{#        <a href="{% url 'projects:my-projects' %}" class="bordered-link">My Stuff</a>#}
+        <a href="{% url 'accounts:profile' %}" class="unbordered-link">My Profile</a>
+{#        <a href="{% url 'accounts:settings' %}" class="unbordered-link">Settings</a>#}
+        <a href="{% url 'accounts:logout' %}" class="unbordered-link">Log Out</a>
+      {% else %}
+        <a href="{% url 'accounts:register' %}" class="bordered-link">Register</a>
+        <a href="{% url 'accounts:login' %}" class="unbordered-link">Sign In</a>
+      {% endif %}
+    </div>
+  </nav>
+</div>

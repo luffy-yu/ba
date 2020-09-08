@@ -1,0 +1,403 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Behavior Analysis</title>
+    <link rel="stylesheet" href="{% static 'styles/css/global.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/css/editor/sourcesanspro.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/css/editor/sourcecodepro.css' %}"/>
+    <link rel="stylesheet" href="{% static 'styles/css/editor/style.css' %}"/>
+    <script src="{% static 'scripts/editor/vendor/htmlparser.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/interact.min.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/jszip.min.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/filesaver.min.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/cssjson.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/html2canvas.js' %}"></script>
+    <script src="{% static 'scripts/vendor/axios.min.js' %}"></script>
+    <script src="{% static 'scripts/editor/vendor/htmljson.js' %}"></script>
+    <script src="{% static 'scripts/editor/script.js' %}"></script>
+    <script src="{% static 'scripts/editor/blockFilter.js' %}"></script>
+    <script src="{% static 'scripts/fileuploader.js' %}"></script>
+    <script>
+        console.log(
+            "    ________                          __        ________          __   \n" +
+            "   / ____/ /__  ____ ___  ___  ____  / /_____ _/ / ____/___  ____/ /__  \n" +
+            "  / __/ / / _ \\/ __ `__ \\/ _ \\/ __ \\/ __/ __ `/ / /   / __ \\/ __  / _  \n" +
+            " / /___/ /  __/ / / / / /  __/ / / / /_/ /_/ / / /___/ /_/ / /_/ /  __/ \n" +
+            "/_____/_/\\___/_/ /_/ /_/\\___/_/ /_/\\__/\\__,_/_/\\____/\\____/\\__,_/\\___/  \n" +
+            "\n"
+        );
+    </script>
+</head>
+<body>
+<!-- PUT THE CUSTOM CONTEXT MENUS IN HERE -->
+
+<div class="context-menu files">
+    <div class="menu-item" data-action="delete-file">Delete</div>
+    <div class="menu-item" data-action="rename-file">Rename</div>
+    <div class="menu-item" data-action="duplicate-file">Duplicate</div>
+</div>
+<div class="context-menu scripts">
+    <div class="menu-item" data-action="duplicate-script">Duplicate</div>
+    <div class="menu-item" data-action="delete-script">Rename</div>
+</div>
+
+<!-- BLOCK ATTRIBUTE DROPDOWN - DEFAULTS TO HIDDEN, REMOVE THIS IF YOU WANT TO SEE IT -->
+<div class="attributeDropdown hidden" id="blockAttributeDropdown">
+    <div class="searchContainer">
+        <input type="text" class="inlineSearch" id="propSearch">
+    </div>
+    <div class="scroll-up" id="attributeScrollUp">
+        <div class="upArrow"></div>
+    </div>
+    <ul class="attribute-results" id="attributeResults">
+    </ul>
+    <div class="scroll-down" id="attributeScrollUp">
+        <div class="downArrow"></div>
+    </div>
+</div>
+
+<!-- CSS ATTRIBUTE DROPDOWN - DEFAULTS TO HIDDEN, REMOVE THIS IF YOU WANT TO SEE IT -->
+<div class="attributeDropdown hidden" id="cssAttributeDropdown">
+    <div class="searchContainer">
+        <input type="text" class="inlineSearch" id="cssPropSearch">
+    </div>
+    <div class="scroll-up" id="cssAttributeScrollUp">
+        <div class="upArrow"></div>
+    </div>
+    <ul class="attribute-results" id="cssAttributeResults">
+    </ul>
+    <div class="scroll-down" id="cssAttributeScrollUp">
+        <div class="downArrow"></div>
+    </div>
+</div>
+
+{% if upload_success %}
+    <script>
+        alert('Succeed.')
+    </script>
+{% endif %}
+
+{% if hide_upload_dialog %}
+    <div class="overlay" id="overlay" style="display: none">
+{% else %}
+    <div class="overlay" id="overlay">
+{% endif %}
+    <div style="height:16px;"></div>
+    <div class="dialog" style="padding:0 0 0 13px;">
+
+        <label>Video Upload:</label>
+        <div style="height:18px;"></div>
+
+        <form id="form1" enctype="multipart/form-data" method="post" action="/painters/upload/">
+            {% csrf_token %}
+            <div style="height:90px;">
+                <div class="row">
+                    <label for="file"> Select a File to Upload:</label>
+                    <div style="height:5px;"></div>
+                    <input type="file" name="file" id="file" onchange="fileSelected();"/>
+                </div>
+                <div id="uploadFileName"></div>
+                <div id="uploadFileSize"></div>
+                <div id="uploadFileType"></div>
+
+            </div>
+            <div style="position: relative;left: 60%">
+                <button class="btn btn-primary" id="p1" type="submit"
+                        onmouseover="p1.style.color='#c77405';
+        p1.style.background='#fdf5ce'" onmouseout="p1.style.color='#ffffff';p1.style.background='#0F9217'"> upload
+                </button>
+                <button id="cancelBtn" type="reset" onclick="closedialog()" onmouseover="cancelBtn.style.color='#c77405';
+        cancelBtn.style.background='#fdf5ce'"
+                        onmouseout="cancelBtn.style.color='#ffffff';cancelBtn.style.background='#0F9217'">
+                    cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if projects %}
+    <div id="newFilePopup" style="display: none;">
+{% else %}
+    <div id="newFilePopup" style="display: inline;">
+{% endif %}
+<h2>
+    New Project
+</h2>
+<div class="content">
+    {% csrf_token %}
+    <div id="fileNameContainer" style="padding-left: 52px;">
+        <span id="fileName" contenteditable="true">untitled</span><span id="fileExtension">.proj</span>
+    </div>
+    <div class="fileTypeButtons">
+        <div class="squareButton fileTypeButton selected" data-ext=".proj">Project</div>
+        <div class="squareButton fileTypeButton disabled" data-ext=".sess">Session</div>
+        <div class="squareButton fileTypeButton disabled" data-ext=".yaml">YMAL</div>
+    </div>
+    <div class="errorBox">
+        The file name has one of the following issues:
+        <ul>
+            <li>Length is not between 1-255</li>
+            <li>Contains an invaild character</li>
+            <li>A file with that name already exists</li>
+        </ul>
+    </div>
+</div>
+<div class="newFileFooter">
+    <div class="newFileFooter-button" id="closeFileName">Close</div>
+    <div class="newFileFooter-button" id="createFileName">Create</div>
+</div>
+</div>
+
+<div class="topBar">
+    <div class="left">
+        <span class="logo">Behavior Analysis</span>
+    </div>
+    <div class="menus right">
+        <div class="menu" id="fileMenu">
+            <span class="menuTitle">File</span>
+            <ul class="menuContents">
+                <li id="openFileButton">
+                    Open
+                    <input id="projectOpen" type="file"
+                           accept="application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed"
+                           class="fake-hidden"/>
+                </li>
+                <li id="downloadButton">
+                    Download
+                </li>
+            </ul>
+        </div>
+        <div class="menu" id="videoMenu">
+            <span class="menuTitle">Video</span>
+            <ul class="menuContents">
+                <li id="uploadVideoButton">
+                    Upload
+                </li>
+            </ul>
+        </div>
+        <div class="menu" id="editMenu">
+            <span class="menuTitle">Edit</span>
+            <ul class="menuContents">
+                <li id="undoButton">Undo</li>
+                <li id="redoButton">Redo</li>
+                <li id="saveButton">Find</li>
+            </ul>
+        </div>
+        {% if request.user.is_authenticated and not project or project.user == request.user %}
+            <div class="menu" id="shareMenu">
+                <span class="menuTitle">Share</span>
+                <ul class="menuContents">
+                    <li id="saveButton">Save</li>
+                    {% if request.user.trusted %}
+                        {% if project %}
+                            {% if project.shared %}
+                                <li id="shareButton">Unshare</li>
+                            {% else %}
+                                <li id="shareButton">Share</li>
+                            {% endif %}
+                        {% else %}
+                            <li id="shareButton">Share</li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<div class="mainArea">
+    <div class="leftSide">
+        <div class="pagePreview" id="draggablePreview">
+            <iframe class="previewBody">
+                mah page preview
+            </iframe>
+        </div>
+        <div class="filePane">
+            {% if projects %}
+                {% for p in projects %}
+                    <div class="squareButton file" data-file="{{ p.name }}">{{ p.name }}</div>
+                {% endfor %}
+            {% endif %}
+            {#            <div class="squareButton file selected" data-file="index.html">index.html</div>#}
+            <div class="squareButton add-file">+</div>
+        </div>
+    </div>
+    <div class="rightSide">
+        <div class="upperArea">
+            <div class="paletteSelect">
+                <!-- Man, whoever decided it was a good idea to use inline styles must be really -
+                     ... ohwait ...
+                     That was me. -->
+                <form>
+                    <div class="paletteColumn">
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="brush"/>
+                            Brush<span class="paletteColorIndicator" style="background:#E44D4D"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="path"/>
+                            Path<span class="paletteColorIndicator" style="background:#E44DBC"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="rect"/>
+                            Rect<span class="paletteColorIndicator" style="background:#914DE4"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="ellipse"/>
+                            Ellipse<span class="paletteColorIndicator" style="background:#4D75E4"></span>
+                        </label>
+                    </div>
+                    <div class="paletteColumn">
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="undo"/>
+                            Undo<span class="paletteColorIndicator" style="background:#4DD2E4"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="redo"/>
+                            Redo<span class="paletteColorIndicator" style="background:#4DE48C"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="clear"/>
+                            Clear<span class="paletteColorIndicator" style="background:#87E44D"></span>
+                        </label>
+                        <label class="paletteOptionWrap">
+                            <input type="radio" id="save"/>
+                            Save<span class="paletteColorIndicator" style="background:#C6E44D"></span>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div id="stroke-container">
+                <div id="colors"></div>
+                <div id="slider" class="ui-slider light">
+                    <div id="handle" class="ui-slider-handle"></div>
+                </div>
+                <div id="box">
+                    <div id="stroke"></div>
+                </div>
+            </div>
+
+            <div class="allBlocks">
+                <div class="search">
+                    <input type="text" id="searchBar" placeholder="Search for a block..."/>
+                </div>
+                {#            <div class="blockArea" id="filteredBlocksArea">#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block small"></div>#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block large"></div>#}
+                {#              <div class="block large"></div>#}
+                {#              <div class="block small"></div>#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block small"></div>#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block"></div>#}
+                {#              <div class="block large"></div>#}
+                {#              <div class="block small"></div>#}
+                {#              <div class="block large"></div>#}
+                {#              <div class="block small"></div>#}
+                {#              <div class="block"></div>#}
+                {#            </div>#}
+            </div>
+        </div>
+        <canvas width="0" height="0" id="canvas"></canvas>
+        {#        <div class="scriptingArea" style="display: none">#}
+        <!-- some test stuff... -->
+        {#          <ul class="script">#}
+        {#            <li class="hat">DOCTYPE html</li>#}
+        {#            <ul class="c-wrapper e-body">#}
+        {#                <li class="c-header">body</li>#}
+        {#                <ul class="c-content">#}
+        {#                </ul>#}
+        {#                <li class="c-footer">&nbsp;</li>#}
+        {#            </ul>#}
+        {#          </ul>#}
+        {#        </div>#}
+        <div class="trashCan" id="trashCan"></div>
+        <div class="trashCan2" id="trashCan2"></div>
+    </div>
+</div>
+<script src="{% static 'scripts/editor/files.js' %}"></script>
+<script src="{% static 'scripts/editor/blocks.js' %}"></script>
+<script src="{% static 'scripts/editor/blockAttributes.js' %}"></script>
+{#  <script src="{% static 'scripts/editor/cssAttributes.js' %}"></script>#}
+<script src="{% static 'scripts/editor/block2json.js' %}"></script>
+<script src="{% static 'scripts/editor/fileManagement.js' %}"></script>
+<script src="{% static 'libs/jquery/3.3.1/jquery.min.js' %}"
+        {#            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"#}
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jquery/jquery.cookie.js' %}"
+        {#            integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"#}
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jqueryui/1.11.4/jquery-ui.min.js' %}"
+        {#            integrity="sha384-YWP9O4NjmcGo4oEJFXvvYSEzuHIvey+LbXkBNJ1Kd0yfugEZN9NCQNpRYBVC1RvA"#}
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js' %}"
+        {#            integrity="sha384-MI/QivrbkVVJ89UOOdqJK/w6TLx0MllO/LsQi9KvvJFuRHGbYtsBvbGSM8JHKCS0"#}
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/jcanvas/16.7.3/jcanvas.min.js' %}"
+        {#            integrity="sha384-amfY6Xr18yRWq6l+1TPfkoSGRCGLNhkU67i1uElI5+u4hC5G5lhbvUU75assw5Jm"#}
+        crossorigin="anonymous"></script>
+<script src="{% static 'libs/ajax.js' %}"></script>
+<script src="{% static 'scripts/global.js' %}"></script>
+<script src="{% static 'scripts/brush.min.js' %}"></script>
+<script src="{% static 'scripts/path.min.js' %}"></script>
+<script src="{% static 'scripts/rect.min.js' %}"></script>
+<script src="{% static 'scripts/ellipse.min.js' %}"></script>
+{#  {% if request.user.is_authenticated %}#}
+{#    <script>#}
+{#        {% if not project %}#}
+{#      var CSRF_TOKEN = '{{ csrf_token }}';#}
+{#      {% if request.user.trusted %}#}
+{#        var CAN_SHARE = true;#}
+{#        {% if project %}#}
+{#          {% if project.shared %}#}
+{#            var SHARED = true;#}
+{#          {% else %}#}
+{#            var SHARED = false;#}
+{#          {% endif %}#}
+{#        {% else %}#}
+{#          var SHARED = false;#}
+{#        {% endif %}#}
+{#      {% else %}#}
+{#        var CAN_SHARE = false;#}
+{#      {% endif %}#}
+{##}
+{#      {% if new_project %}#}
+{#        var NEW_PROJECT = true;#}
+{#        var P_ID = undefined;#}
+{#      {% else %}#}
+{#        var NEW_PROJECT = false;#}
+{#        var P_ID = {{ project.id }}; // set this...#}
+{#        var P_DATA = JSON.parse('{{ project.data|escapejs }}');#}
+{##}
+{#        // first, set the json to the new json#}
+{#        fileData = P_DATA;#}
+{##}
+{#        // then, set the file selectors#}
+{#        var newHtml = '';#}
+{#        var first = true;#}
+{#        for (file in P_DATA) {#}
+{#          newHtml += '<div class="file' + (first ? ' selected' : '') + '"><div class="file-name" data-file="' + file + '">' + file + '</div></div>';#}
+{#          if (first) {#}
+{#            first = false;#}
+{#            currentFile = file;#}
+{#          }#}
+{#        }#}
+{#        newHtml += '<div class="add-file"><div class="file-name">+</div></div>';#}
+{#        $('.filePane')[0].innerHTML = newHtml;#}
+{##}
+{#        // finally, re-render#}
+{#        loadFile(currentFile);#}
+{#      {% endif %}#}
+{#    </script>#}
+{#    {% if request.user.trusted and not project or request.user == project.user %}#}
+{#      <script src="{% static 'scripts/editor/siteIntegrations.js' %}"></script>#}
+{#    {% endif %}#}
+{#  {% endif %}#}
+</body>
+</html>

@@ -1,0 +1,73 @@
+<projectsettings>
+    <!-- <div class="creation-box">
+        <input type="text" name="creation-title" value="Creation Title Here"></input><br/>
+        <button type="button" name="delete" onclick={ delete }>delete</button>
+        <div class="share-box">
+            <input type="checkbox" name="shared" onclick={ share }>shared?</input>
+        </div>
+    </div> -->
+
+    <a href="/projects/project/{ id }">
+        <div class="creation-box">
+            <input name="name" type="text" value="{ opts.name }" onclick={ inputClick } onblur={ updateName } /><br />
+            <button name="delete" onclick={ delete }>delete</button>
+            <div class="share-box" hidden={ opts.canshare == 'True' ? '' : true }>
+                <input onclick={ share } name="shared" checked={ opts.shared == 'True' ? true : '' } type="checkbox">shared?</input>
+            </div>
+        </div>
+    </a>
+    <script>
+        // TODO:  SHARED OR NOT
+        // TODO:  STYLE!
+
+        this.id = opts.id;
+
+        var config = {
+            headers: {
+                "X-CSRFToken": CSRF_TOKEN
+            }
+        };
+
+        this.inputClick = function(e) {
+            e.stopPropagation();
+        }
+
+        this.share = function() {
+            axios.patch('/rest/projects/project/' + opts.id, {
+                shared: this.shared.checked
+            }, config).then(function(data) {
+                console.log(data);
+            }).catch(function(error) {
+                console.log(error);
+            });
+        };
+
+        this.delete = function() {
+            // going to have to make a modal for this
+            console.log(this);
+            if (window.confirm('Would you like to delete your project "' + this.name.value + '"?')) {
+                axios.delete('/rest/projects/project/' + opts.id, config)
+                    // do some confirmation (like bootstrap messages, kinda) for successes and errors
+                    .then(function(data) {
+                        this.root.parentElement.removeChild(this.root);
+                    }.bind(this)).catch(function(error) {
+                        console.log(error);
+                        document.write(error.data)
+                    });
+            }
+        };
+
+        this.updateName = function() {
+            axios.patch('/rest/projects/project/' + opts.id, {
+                name: this.name.value
+            }, config).then(function(data) {
+                console.log('name updated yay');
+                console.log(data);
+                this.nameDisplay.textContent = data.data.name;
+            }.bind(this)).catch(function(error) {
+                console.log('name update failed :(');
+                console.log(error);
+            });
+        };
+    </script>
+</projectsettings>

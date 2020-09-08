@@ -1,0 +1,14 @@
+$footer-height: 130px;
+
+$base-spacing-unit: 35px;
+
+$colors: (
+    seafoam: #42BA92,
+    seafoam-dark: #319E7A,
+	coral: #ff7f50,
+);
+
+// colors
+@function color($color-name) {
+    @return map-get($colors, $color-name);
+}
